@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prettiefy GraphQL Payload</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="title">Prettiefy GraphQL</div>
+        <div class="subtitle">Local-only formatter for BC payloads</div>
+      </header>
+
+      <section class="panel">
+        <div class="panelHeader">
+          <div class="panelTitle">Input</div>
+          <div class="panelActions">
+            <button id="btnClear" class="btn btnGhost" type="button">Clear</button>
+          </div>
+        </div>
+        <textarea
+          id="input"
+          class="textarea"
+          spellcheck="false"
+          placeholder='Paste the BC payload JSON here (e.g. {"query":"mutation...\r\n{...}"}), or paste a raw GraphQL query/mutation.'
+        ></textarea>
+        <div id="status" class="status" aria-live="polite"></div>
+      </section>
+
+      <section class="grid">
+        <section class="panel">
+          <div class="panelHeader">
+            <div class="panelTitle">GraphQL (formatted)</div>
+            <div class="panelActions">
+              <button id="btnCopyGraphql" class="btn" type="button">Copy</button>
+            </div>
+          </div>
+          <pre id="outputGraphql" class="output" aria-label="Formatted GraphQL output"></pre>
+        </section>
+      </section>
+    </div>
+
+    <script src="./popup.js"></script>
+  </body>
+</html>
+
