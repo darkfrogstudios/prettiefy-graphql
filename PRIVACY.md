@@ -11,5 +11,5 @@ This extension processes data entirely locally in your browser.
 ## Permissions Used
 - `clipboardWrite`: Only to copy formatted GraphQL to your clipboard when you click "Copy"
 
-Contact: [your-email@domain.com]
-Last Updated: [date]
+Contact: [info@darkfrogstudios.com]
+Last Updated: [Feb,19,2026]
