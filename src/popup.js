@@ -4,6 +4,7 @@ const elOutputGraphql = document.getElementById("outputGraphql");
 const btnCopyGraphql = document.getElementById("btnCopyGraphql");
 const btnClear = document.getElementById("btnClear");
 const btnBack = document.getElementById("btnBack");
+const copyNotification = document.getElementById("copyNotification");
 const appEl = document.querySelector(".app");
 
 function setView(view) {
@@ -14,6 +15,13 @@ function setStatus(type, text) {
   elStatus.classList.remove("ok", "err");
   if (type) elStatus.classList.add(type);
   elStatus.textContent = text ?? "";
+}
+
+function showCopyNotification() {
+  copyNotification.classList.add("show");
+  setTimeout(() => {
+    copyNotification.classList.remove("show");
+  }, 2000);
 }
 
 /**
@@ -181,6 +189,7 @@ btnCopyGraphql.addEventListener("click", async () => {
   try {
     const text = elOutputGraphql.textContent ?? "";
     await copyText(text);
+    showCopyNotification(); // Show visual feedback
     setStatus("ok", "Copied formatted GraphQL.");
   } catch (e) {
     setStatus("err", `Copy failed. (${e?.message ?? String(e)})`);

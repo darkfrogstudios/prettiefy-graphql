@@ -1,17 +1,18 @@
 {
   "manifest_version": 3,
   "name": "Prettiefy GraphQL Payload",
-  "version": "0.1.0",
-  "description": "Paste a GraphQL JSON payload (e.g. from BC) and prettify it locally as you type.",
+  "version": "1.0.0",
+  "description": "Local-only GraphQL query formatter and syntax highlighter. Paste JSON payloads or raw GraphQL to format and prettify them with syntax highlighting. No data collection, works entirely offline.",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
   "action": {
     "default_title": "Prettiefy GraphQL Payload",
     "default_popup": "popup.html"
   },
-
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
-    "34": "icons/icon-34.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },

@@ -103,6 +103,7 @@ body {
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
   flex-shrink: 0;
+  position: relative;
 }
 
 .panelTitle {
@@ -114,6 +115,41 @@ body {
 .panelActions {
   display: flex;
   gap: 8px;
+  position: relative;
+}
+
+/* Copy Notification */
+.copy-notification {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 8px;
+  background: var(--ok);
+  color: #0b1220;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.copy-notification::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  border: 5px solid transparent;
+  border-top-color: var(--ok);
+}
+
+.copy-notification.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .btn {
