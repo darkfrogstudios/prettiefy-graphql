@@ -3,6 +3,12 @@ const elStatus = document.getElementById("status");
 const elOutputGraphql = document.getElementById("outputGraphql");
 const btnCopyGraphql = document.getElementById("btnCopyGraphql");
 const btnClear = document.getElementById("btnClear");
+const btnBack = document.getElementById("btnBack");
+const appEl = document.querySelector(".app");
+
+function setView(view) {
+  appEl.setAttribute("data-view", view);
+}
 
 function setStatus(type, text) {
   elStatus.classList.remove("ok", "err");
@@ -142,6 +148,13 @@ function scheduleRender() {
     const res = formatInput(elInput.value);
     elOutputGraphql.innerHTML = highlightGraphQL(res.graphql);
     setStatus(res.status.type, res.status.text);
+    
+    // Switch to output view if there's content
+    if (res.graphql.trim()) {
+      setView("output");
+    } else {
+      setView("input");
+    }
   });
 }
 
@@ -155,6 +168,12 @@ elInput.addEventListener("input", scheduleRender);
 btnClear.addEventListener("click", () => {
   elInput.value = "";
   scheduleRender();
+  setView("input");
+  elInput.focus();
+});
+
+btnBack.addEventListener("click", () => {
+  setView("input");
   elInput.focus();
 });
 

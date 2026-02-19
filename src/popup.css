@@ -33,7 +33,7 @@ body {
   display: grid;
   gap: 12px;
   height: 100vh;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
 }
 
 .header {
@@ -56,11 +56,31 @@ body {
   font-size: 12px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+/* View State Management */
+.input-stage,
+.output-stage {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
+  height: 100%;
+}
+
+/* Show input stage by default */
+.app[data-view="input"] .input-stage {
+  display: flex;
+}
+
+.app[data-view="input"] .output-stage {
+  display: none;
+}
+
+/* Show output stage when switched */
+.app[data-view="output"] .input-stage {
+  display: none;
+}
+
+.app[data-view="output"] .output-stage {
+  display: flex;
 }
 
 .panel {
@@ -71,6 +91,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
 }
 
 .panelHeader {
@@ -81,6 +102,7 @@ body {
   padding: 10px 10px;
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
 }
 
 .panelTitle {
@@ -102,6 +124,7 @@ body {
   border-radius: 10px;
   cursor: pointer;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .btn:active {
@@ -112,10 +135,11 @@ body {
   background: rgba(255, 255, 255, 0.06);
 }
 
-.textarea {
+/* Input stage specific styles */
+.input-stage .textarea {
   width: 100%;
-  height: 72px;
-  min-height: 56px;
+  height: 200px;
+  min-height: 150px;
   resize: vertical;
   background: rgba(0, 0, 0, 0.15);
   color: var(--text);
@@ -124,6 +148,7 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   outline: none;
+  flex: 1;
 }
 
 .status {
@@ -132,6 +157,7 @@ body {
   color: var(--muted);
   font-size: 12px;
   min-height: 18px;
+  flex-shrink: 0;
 }
 
 .status.ok {
@@ -142,7 +168,8 @@ body {
   color: rgba(255, 92, 124, 0.95);
 }
 
-.output {
+/* Output stage specific styles */
+.output-stage .output {
   margin: 0;
   padding: 10px;
   flex: 1;
@@ -151,6 +178,7 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   background: rgba(0, 0, 0, 0.14);
+  min-height: 0;
 }
 
 /* Syntax highlighting colors */
