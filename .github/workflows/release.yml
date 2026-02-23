@@ -1,16 +1,16 @@
-name: Create Release
+name: Create Extension Release
 
 on:
   push:
     tags:
-      - 'v*' # Trigger on version tags like v1.0.0
+      - 'v*.*.*'
 
 jobs:
-  release:
+  build-and-release:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
+    - name: Checkout source code
       uses: actions/checkout@v4
       
     - name: Setup Node.js
@@ -22,56 +22,86 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Build extension
+    - name: Build extension from source
       run: npm run build
       
-    - name: Verify build output
+    - name: Package extension for Chrome Web Store
       run: |
-        echo "Checking if dist directory exists and has content:"
-        ls -la dist/
-        echo "Size of dist directory:"
-        du -sh dist/
+        echo "=== PACKAGING CHROME EXTENSION ==="
         
-    - name: Create extension ZIP (only extension files)
-      run: |
-        cd dist
-        zip -r ../prettiefy-graphql-extension-${{ github.ref_name }}.zip *
+        # Verify build output exists
+        if [ ! -d "dist" ]; then
+          echo "❌ Build failed - no dist directory!"
+          exit 1
+        fi
+        
+        # Create clean extension package
+        mkdir chrome-extension
+        
+        # Copy only the essential extension files
+        cp dist/manifest.json chrome-extension/
+        cp dist/popup.html chrome-extension/  
+        cp dist/popup.css chrome-extension/
+        cp dist/popup.js chrome-extension/
+        cp -r dist/icons chrome-extension/
+        
+        # Show what we're packaging
+        echo "Chrome extension files to be packaged:"
+        find chrome-extension -type f -exec ls -lh {} \;
+        
+        # Create the release ZIP
+        cd chrome-extension
+        zip -r ../prettiefy-graphql-${{ github.ref_name }}.zip *
         cd ..
-        echo "Created ZIP with contents:"
-        unzip -l prettiefy-graphql-extension-${{ github.ref_name }}.zip
         
-    - name: Create Release
+        # Final verification
+        echo ""
+        echo "=== RELEASE PACKAGE CREATED ==="
+        echo "Package size: $(ls -lh prettiefy-graphql-${{ github.ref_name }}.zip | awk '{print $5}')"
+        echo "Package contents:"
+        unzip -l prettiefy-graphql-${{ github.ref_name }}.zip
+        
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        files: |
-          prettiefy-graphql-extension-${{ github.ref_name }}.zip
+        files: prettiefy-graphql-${{ github.ref_name }}.zip
+        name: "Prettiefy GraphQL Extension ${{ github.ref_name }}"
         body: |
-          ## 🚀 Chrome Extension Release ${{ github.ref_name }}
+          ## 🎯 Chrome Extension Ready for Installation
           
-          ### 📦 Installation Instructions
-          1. Download `prettiefy-graphql-extension-${{ github.ref_name }}.zip` below
-          2. **Extract the ZIP file** to a folder
-          3. Open Chrome → `chrome://extensions/`
-          4. Enable **Developer mode** (top right toggle)
-          5. Click **"Load unpacked"** → Select the extracted folder
-          6. The extension icon appears in your toolbar! 🎉
+          ### 📥 Installation Instructions
+          1. **Download** `prettiefy-graphql-${{ github.ref_name }}.zip` 
+          2. **Extract** the ZIP file to a folder
+          3. **Open Chrome** → Go to `chrome://extensions/`
+          4. **Enable** "Developer mode" (toggle top-right)
+          5. **Click** "Load unpacked" → Select the extracted folder
+          6. **Success!** Extension appears in your toolbar 🎉
           
-          ### 📁 ZIP Contents
-          The ZIP contains only the built extension files:
-          - `manifest.json` - Extension configuration
-          - `popup.html`, `popup.css`, `popup.js` - Extension UI and logic  
-          - `icons/` - Extension icons
-          - No source code or build files included
+          ### 📦 Package Contents (Chrome Extension Files Only)
+          ```
+          manifest.json    - Extension configuration (V3)
+          popup.html       - Extension popup interface
+          popup.css        - Styles and dark theme  
+          popup.js         - GraphQL formatting logic (bundled)
+          icons/           - Extension icons (16px to 128px)
+          ```
           
-          ### ✨ Features
-          - 🔒 **100% Local** - No data leaves your browser
-          - 🎨 **Syntax Highlighting** - Beautiful GraphQL formatting
-          - 📋 **One-Click Copy** - Copy formatted queries instantly
-          - ⚡ **Real-Time** - Format as you type
+          **Package size**: ~15-20KB (extension files only, no source code)
           
-          ### 🔒 Privacy
-          This extension processes all data locally - no external requests or tracking.
-        draft: false
-        prerelease: false
+          ### ✨ What This Extension Does
+          - 🔒 **Local-only GraphQL formatter** - No data sent anywhere
+          - 🎨 **Syntax highlighting** - Beautiful color-coded output
+          - 📱 **Smart UI** - Input stage → Output stage design
+          - ⚡ **Real-time formatting** - Format as you type
+          - 📋 **One-click copy** - Copy formatted GraphQL instantly
+          
+          ### 🔐 Privacy Guarantee
+          - ✅ No data collection or tracking
+          - ✅ No external network requests
+          - ✅ All processing happens in your browser
+          - ✅ Only requires clipboard permission (for copy feature)
+          
+          ---
+          *This is a production-ready Chrome extension built from source*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
