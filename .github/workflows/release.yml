@@ -3,7 +3,10 @@ name: Build & Release Chrome Extension
 on:
   push:
     tags:
-      - 'v*' # Matches any tag starting with v
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   build-and-release:
