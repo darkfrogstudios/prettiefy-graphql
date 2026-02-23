@@ -1,107 +1,54 @@
-name: Create Extension Release
+name: Build & Release Chrome Extension
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*' # Matches any tag starting with v
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: Install dependencies
-      run: npm ci
+    - run: npm ci
+    - run: npm run build
       
-    - name: Build extension from source
-      run: npm run build
-      
-    - name: Package extension for Chrome Web Store
+    - name: Package extension
       run: |
-        echo "=== PACKAGING CHROME EXTENSION ==="
-        
-        # Verify build output exists
-        if [ ! -d "dist" ]; then
-          echo "❌ Build failed - no dist directory!"
-          exit 1
-        fi
-        
-        # Create clean extension package
         mkdir chrome-extension
-        
-        # Copy only the essential extension files
         cp dist/manifest.json chrome-extension/
-        cp dist/popup.html chrome-extension/  
+        cp dist/popup.html chrome-extension/
         cp dist/popup.css chrome-extension/
         cp dist/popup.js chrome-extension/
         cp -r dist/icons chrome-extension/
-        
-        # Show what we're packaging
-        echo "Chrome extension files to be packaged:"
-        find chrome-extension -type f -exec ls -lh {} \;
-        
-        # Create the release ZIP
         cd chrome-extension
-        zip -r ../prettiefy-graphql-${{ github.ref_name }}.zip *
+        zip -r ../prettiefy-graphql-chrome-extension.zip *
         cd ..
+        echo "ZIP contents:"
+        unzip -l prettiefy-graphql-chrome-extension.zip
         
-        # Final verification
-        echo ""
-        echo "=== RELEASE PACKAGE CREATED ==="
-        echo "Package size: $(ls -lh prettiefy-graphql-${{ github.ref_name }}.zip | awk '{print $5}')"
-        echo "Package contents:"
-        unzip -l prettiefy-graphql-${{ github.ref_name }}.zip
-        
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
       with:
-        files: prettiefy-graphql-${{ github.ref_name }}.zip
-        name: "Prettiefy GraphQL Extension ${{ github.ref_name }}"
+        files: prettiefy-graphql-chrome-extension.zip
+        name: "Prettiefy GraphQL ${{ github.ref_name }}"
         body: |
-          ## 🎯 Chrome Extension Ready for Installation
-          
-          ### 📥 Installation Instructions
-          1. **Download** `prettiefy-graphql-${{ github.ref_name }}.zip` 
-          2. **Extract** the ZIP file to a folder
-          3. **Open Chrome** → Go to `chrome://extensions/`
-          4. **Enable** "Developer mode" (toggle top-right)
-          5. **Click** "Load unpacked" → Select the extracted folder
-          6. **Success!** Extension appears in your toolbar 🎉
-          
-          ### 📦 Package Contents (Chrome Extension Files Only)
-          ```
-          manifest.json    - Extension configuration (V3)
-          popup.html       - Extension popup interface
-          popup.css        - Styles and dark theme  
-          popup.js         - GraphQL formatting logic (bundled)
-          icons/           - Extension icons (16px to 128px)
-          ```
-          
-          **Package size**: ~15-20KB (extension files only, no source code)
-          
-          ### ✨ What This Extension Does
-          - 🔒 **Local-only GraphQL formatter** - No data sent anywhere
-          - 🎨 **Syntax highlighting** - Beautiful color-coded output
-          - 📱 **Smart UI** - Input stage → Output stage design
-          - ⚡ **Real-time formatting** - Format as you type
-          - 📋 **One-click copy** - Copy formatted GraphQL instantly
-          
-          ### 🔐 Privacy Guarantee
-          - ✅ No data collection or tracking
-          - ✅ No external network requests
-          - ✅ All processing happens in your browser
-          - ✅ Only requires clipboard permission (for copy feature)
-          
-          ---
-          *This is a production-ready Chrome extension built from source*
+          ## Download & Install
+
+          > **⚠️ Download `prettiefy-graphql-chrome-extension.zip` below — NOT the "Source code" links!**
+
+          ### Steps
+          1. Download `prettiefy-graphql-chrome-extension.zip` from the **Assets** section below
+          2. Extract the ZIP
+          3. Open Chrome → `chrome://extensions/`
+          4. Enable **Developer mode** (top-right)
+          5. Click **Load unpacked** → select the extracted folder
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
