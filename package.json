@@ -1,14 +1,16 @@
 {
   "name": "prettiefy-graphql",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "watch": "node scripts/build.mjs --watch"
+    "watch": "node scripts/build.mjs --watch",
+    "clean": "rm -rf dist",
+    "build:clean": "npm run clean && npm run build",
+    "package": "npm run build && cd dist && zip -r ../prettiefy-graphql-extension.zip ."
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
   }
 }
-

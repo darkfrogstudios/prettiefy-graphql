@@ -9,6 +9,11 @@ yarn-error.log*
 .vscode/
 .env
 .env.*
+
+# Exclude markdown files except specific ones
 *.md
-!PRIVACY.md
 !README.md
+!PRIVACY.md
+
+# Allow GitHub workflows
+!.github/

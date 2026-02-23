@@ -14,18 +14,23 @@ A local-only Chrome extension for formatting and prettifying GraphQL queries wit
 
 ## 🚀 Installation
 
-### From Chrome Web Store _(Coming Soon)_
-1. Visit the Chrome Web Store
-2. Search for "Prettiefy GraphQL"
-3. Click "Add to Chrome"
+### Option 1: Download from GitHub Releases
+1. **Go to [Releases](https://github.com/yourusername/prettiefy-graphql/releases)**
+2. **Download** the latest `prettiefy-graphql-extension.zip`
+3. **Extract the ZIP file** to a folder on your computer
+4. **Open Chrome** and navigate to `chrome://extensions/`
+5. **Enable "Developer mode"** in the top right corner
+6. **Click "Load unpacked"** and select the extracted folder
+7. **The extension icon** will appear in your Chrome toolbar
 
-### Manual Installation (Developer Mode)
-1. Download or clone this repository
-2. Run `npm install` and `npm run build`
-3. Open Chrome and go to `chrome://extensions/`
-4. Enable "Developer mode" in the top right
-5. Click "Load unpacked" and select the `dist` folder
-6. The extension icon will appear in your toolbar
+### Option 2: Build from Source
+1. Clone this repository: `git clone https://github.com/yourusername/prettiefy-graphql.git`
+2. Install dependencies: `npm install`
+3. Build the extension: `npm run build`
+4. Load the `dist` folder as an unpacked extension in Chrome
+
+### Option 3: Chrome Web Store _(Coming Soon)_
+- Will be available in the Chrome Web Store for one-click installation
 
 ## 📖 Usage
 

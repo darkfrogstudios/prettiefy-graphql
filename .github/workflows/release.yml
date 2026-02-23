@@ -1,0 +1,59 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags like v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build extension
+      run: npm run build
+      
+    - name: Create extension ZIP
+      run: |
+        cd dist
+        zip -r ../prettiefy-graphql-v${{ github.ref_name }}.zip .
+        cd ..
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          prettiefy-graphql-v${{ github.ref_name }}.zip
+        body: |
+          ## 🚀 Chrome Extension Release ${{ github.ref_name }}
+          
+          ### 📦 Installation Instructions
+          1. Download the `prettiefy-graphql-v${{ github.ref_name }}.zip` file below
+          2. Extract the ZIP file
+          3. Open Chrome and go to `chrome://extensions/`
+          4. Enable "Developer mode" in the top right
+          5. Click "Load unpacked" and select the extracted folder
+          
+          ### ✨ What's New
+          - Bug fixes and improvements
+          - Enhanced GraphQL formatting
+          - Better error handling
+          
+          ### 🔒 Privacy
+          This extension processes all data locally - no information is sent to external servers.
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
