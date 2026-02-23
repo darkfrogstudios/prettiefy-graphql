@@ -28,11 +28,18 @@ jobs:
     - name: Build extension
       run: npm run build
       
-    - name: Create extension ZIP
+    - name: Verify dist contents
+      run: |
+        echo "Contents of dist directory:"
+        ls -la dist/
+        
+    - name: Create extension ZIP (only dist contents)
       run: |
         cd dist
-        zip -r ../prettiefy-graphql-extension.zip .
+        zip -r ../prettiefy-graphql-extension.zip *
         cd ..
+        echo "ZIP created. Contents:"
+        unzip -l prettiefy-graphql-extension.zip
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4

@@ -25,34 +25,52 @@ jobs:
     - name: Build extension
       run: npm run build
       
-    - name: Create extension ZIP
+    - name: Verify build output
+      run: |
+        echo "Checking if dist directory exists and has content:"
+        ls -la dist/
+        echo "Size of dist directory:"
+        du -sh dist/
+        
+    - name: Create extension ZIP (only extension files)
       run: |
         cd dist
-        zip -r ../prettiefy-graphql-v${{ github.ref_name }}.zip .
+        zip -r ../prettiefy-graphql-extension-${{ github.ref_name }}.zip *
         cd ..
+        echo "Created ZIP with contents:"
+        unzip -l prettiefy-graphql-extension-${{ github.ref_name }}.zip
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          prettiefy-graphql-v${{ github.ref_name }}.zip
+          prettiefy-graphql-extension-${{ github.ref_name }}.zip
         body: |
           ## 🚀 Chrome Extension Release ${{ github.ref_name }}
           
           ### 📦 Installation Instructions
-          1. Download the `prettiefy-graphql-v${{ github.ref_name }}.zip` file below
-          2. Extract the ZIP file
-          3. Open Chrome and go to `chrome://extensions/`
-          4. Enable "Developer mode" in the top right
-          5. Click "Load unpacked" and select the extracted folder
+          1. Download `prettiefy-graphql-extension-${{ github.ref_name }}.zip` below
+          2. **Extract the ZIP file** to a folder
+          3. Open Chrome → `chrome://extensions/`
+          4. Enable **Developer mode** (top right toggle)
+          5. Click **"Load unpacked"** → Select the extracted folder
+          6. The extension icon appears in your toolbar! 🎉
           
-          ### ✨ What's New
-          - Bug fixes and improvements
-          - Enhanced GraphQL formatting
-          - Better error handling
+          ### 📁 ZIP Contents
+          The ZIP contains only the built extension files:
+          - `manifest.json` - Extension configuration
+          - `popup.html`, `popup.css`, `popup.js` - Extension UI and logic  
+          - `icons/` - Extension icons
+          - No source code or build files included
+          
+          ### ✨ Features
+          - 🔒 **100% Local** - No data leaves your browser
+          - 🎨 **Syntax Highlighting** - Beautiful GraphQL formatting
+          - 📋 **One-Click Copy** - Copy formatted queries instantly
+          - ⚡ **Real-Time** - Format as you type
           
           ### 🔒 Privacy
-          This extension processes all data locally - no information is sent to external servers.
+          This extension processes all data locally - no external requests or tracking.
         draft: false
         prerelease: false
       env:
